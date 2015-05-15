@@ -1,6 +1,4 @@
-# music-app
-
-Example Swift App
+# Example Swift App
 
 Get data in JSON from server, display it in iOS,
 
