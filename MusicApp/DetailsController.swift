@@ -20,7 +20,7 @@ class DetailsController: BaseController {
     var selectedTrackid: Int = Int()
     
     func getItem(index: Int) -> AnyObject {
-        return messagesArray[index].valueForKey("track")!
+        return messagesArray[index]
     }
 
     func tableView(tableView:UITableView, numberOfRowsInSection section:Int) -> Int {
@@ -29,7 +29,7 @@ class DetailsController: BaseController {
 
     func tableView(tableView:UITableView, cellForRowAtIndexPath indexPath: AnyObject) -> UITableViewCell {
         let cell:UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "TrackCell")
-        cell.textLabel!.text = getItem(indexPath.row).valueForKey("name") as? String
+        cell.textLabel!.text = getItem(indexPath.row).valueForKey("title") as? String
         return cell
     }
 

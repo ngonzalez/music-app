@@ -25,14 +25,14 @@ class ViewController: BaseController {
     }
 
     func getItem(index: Int) -> AnyObject {
-        return messagesArray[index].valueForKey("release")!
+        return messagesArray[index]
     }
 
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
 
         messagesArray = originalMessagesArray.filter({ (object:AnyObject) in
             if searchText.isEmpty { return true }
-            let name = object.valueForKey("release")!.valueForKey("name") as! String
+            let name = object.valueForKey("name") as! String
             return name.lowercaseString.rangeOfString(searchText) != nil
         })
 

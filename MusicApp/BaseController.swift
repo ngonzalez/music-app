@@ -10,7 +10,7 @@ import UIKit
 
 class BaseController: UIViewController {
 
-    var ApiURL = "http://192.168.0.102:9292"
+    var ApiURL = "http://192.168.0.102"
 
     func getData(path: String, fn: (NSArray) -> ()) {
         let request:NSURLRequest = NSURLRequest(URL: NSURL(string: path)!)
