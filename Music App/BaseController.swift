@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BaseController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class BaseController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchDisplayDelegate, UITextFieldDelegate {
 
     var ApiURL = "http://192.168.1.10"
 

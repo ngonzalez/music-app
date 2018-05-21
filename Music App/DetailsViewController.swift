@@ -14,7 +14,7 @@ import AVFoundation
 class DetailsViewController: BaseController {
 
     var videoPlayer:AVPlayer!
-    
+
     var mediaUrl:String!
     
     var streamUuid:String!
@@ -24,6 +24,7 @@ class DetailsViewController: BaseController {
     override func viewDidLoad() {
         super.viewDidLoad()
         getItems(id: self.selectedId)
+        UIApplication.shared.isIdleTimerDisabled = true
     }
 
     func getItems(id: Int) {
