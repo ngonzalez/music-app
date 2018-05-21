@@ -43,9 +43,12 @@ class DetailsViewController: BaseController {
             self.mediaUrl = nil
             self.streamUuid = nil
             self.streamUrl = nil
-            
+
             // Start Player
             playTrack(id: value)
+
+            // Clear selection
+            self.tableView.deselectRow(at: indexPath, animated: true)
         }
     }
 
@@ -57,7 +60,7 @@ class DetailsViewController: BaseController {
     
     func playTrack(id: Int) {
         let trackUrl = NSString(format:"%@/tracks/%i.json", ApiURL, id) as String
-        for _ in 1...5 {
+        for _ in 1...10 {
             getURL(url: trackUrl, fn: {(trackResults) in
                 if let value = trackResults["media_url"] as? String {
                     self.mediaUrl = value
