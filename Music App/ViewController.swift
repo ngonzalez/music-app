@@ -27,7 +27,7 @@ class ViewController: BaseController {
 
     func search(text: String) {
         let escapedTxt = text.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
-        let url = NSString(format:"%@/music/search.json?q=%@", ApiURL, escapedTxt) as String
+        let url = NSString(format:"%@/music_folders.json?q=%@", ApiURL, escapedTxt) as String
         getURL(url: url, fn: {(results) in
             self.messagesArray = results as! [AnyObject]
             DispatchQueue.main.sync {
@@ -37,15 +37,16 @@ class ViewController: BaseController {
     }
 
     override func format_cell_label(item: AnyObject) -> String {
-        return String(format: "%@", item["year"] as! NSNumber) + " " +
-               (item["formatted_name"] as! String)
+        let itemYear = item["year"] as! String
+        let itemName = item["formatted_name"] as! String
+        return "\(itemYear) - \(itemName)"
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let value = getItem(index: indexPath.row)["id"] as? Int {
-            self.selectedId = value
-            performSegue(withIdentifier: "ShowDetails", sender: self)
-        }
+        let item:AnyObject = getItem(index: indexPath.row)
+        let dataUrl:String = item["data_url"] as! String
+        self.selectedId = dataUrl
+        performSegue(withIdentifier: "ShowDetails", sender: self)
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

@@ -10,13 +10,13 @@ import UIKit
 
 class BaseController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchDisplayDelegate, UITextFieldDelegate {
 
-    var ApiURL = "http://192.168.1.10"
+    var ApiURL = "http://0.0.0.0:3000"
 
     @IBOutlet var tableView: UITableView!
 
     var messagesArray: [AnyObject] = []
 
-    var selectedId: Int = Int()
+    var selectedId: String = String()
 
     func getItem(index: Int) -> AnyObject {
         return messagesArray[index]
@@ -27,7 +27,7 @@ class BaseController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell:UITableViewCell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "TableViewCell")
+        let cell:UITableViewCell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: "TableViewCell")
         cell.textLabel!.text = format_cell_label(item: getItem(index: indexPath.row))
         return cell
     }
@@ -37,7 +37,7 @@ class BaseController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let request = URLRequest(url: URL(string: url)!)
         let task = session.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
             do {
-                fn(try JSONSerialization.jsonObject(with: data!) as AnyObject)
+                fn(try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers) as AnyObject)
             } catch let error as NSError {
                 print(error)
             }

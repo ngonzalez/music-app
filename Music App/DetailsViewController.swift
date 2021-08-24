@@ -14,12 +14,10 @@ import AVFoundation
 class DetailsViewController: BaseController {
 
     var videoPlayer:AVPlayer!
-
-    var mediaUrl:String!
     
-    var streamUuid:String!
+    var m3u8_exists:Bool = false
     
-    var streamUrl:String!
+    var streamUrl:String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,8 +25,8 @@ class DetailsViewController: BaseController {
         UIApplication.shared.isIdleTimerDisabled = true
     }
 
-    func getItems(id: Int) {
-        let url = NSString(format:"%@/music/%i.json", ApiURL, id) as String
+    func getItems(id: String) {
+        let url = NSString(format:"%@/music_folders/%@.json", ApiURL, self.selectedId) as String
         getURL(url: url, fn: {(results) in
             self.messagesArray = results as! [AnyObject]
             DispatchQueue.main.sync {
@@ -38,79 +36,46 @@ class DetailsViewController: BaseController {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let value = getItem(index: indexPath.row)["id"] as? Int {
-            // Clear track infos
-            self.mediaUrl = nil
-            self.streamUuid = nil
-            self.streamUrl = nil
-
-            // Start Player
-            playTrack(id: value)
-
-            // Clear selection
-            self.tableView.deselectRow(at: indexPath, animated: true)
-        }
+        let item:AnyObject = getItem(index: indexPath.row)
+        let itemId:String = item["data_url"] as! String
+        self.tableView.deselectRow(at: indexPath, animated: true)
+        playTrack(id: itemId)
     }
 
     override func format_cell_label(item: AnyObject) -> String {
-        return (item["number"] as! String) + " - " +
-               (item["artist"] as! String) + " - " +
-               (item["title"] as! String)
+        let itemArtist = item["artist"] as! String
+        let itemTitle = item["title"] as! String
+        return "\(itemArtist) - \(itemTitle)"
     }
-    
-    func playTrack(id: Int) {
-        let trackUrl = NSString(format:"%@/tracks/%i.json", ApiURL, id) as String
+
+    func playTrack(id: String) {
+        print("playTrack \(id)")
+        let trackUrl = NSString(format:"%@/audio_files/%@.json", ApiURL, id) as String
         for _ in 1...10 {
-            getURL(url: trackUrl, fn: {(trackResults) in
-                if let value = trackResults["media_url"] as? String {
-                    self.mediaUrl = value
+            getURL(url: trackUrl, fn: {(results) in
+                print(results)
+                if (results["m3u8_exists"] as? Int == 1) {
+                    self.m3u8_exists = true
+                    print("m3u8_exists: \(self.m3u8_exists)")
+                }
+                if let itemId = results["item_id"] as? Int {
+                    self.streamUrl = "/hls/\(itemId).m3u8"
+                    print("streamUrl: \(self.streamUrl)")
+//                    let streamAsset = AVAsset(url: URL(string: self.streamUrl)!)
+//                    let playerItem = AVPlayerItem(asset: streamAsset)
+//                    let playerViewController = AVPlayerViewController()
+//                    playerViewController.delegate = self as? AVPlayerViewControllerDelegate
+//                    let player = AVPlayer(playerItem: playerItem)
+//                    playerViewController.player = player
+//                    self.present(playerViewController, animated: true) {
+//                        player.play()
+//                    }
                 }
             })
-            if (self.mediaUrl != nil) {
+            if (self.m3u8_exists) {
                 break
             } else {
                 sleep(1)
-            }
-        }
-        if (self.mediaUrl != nil) {
-            let streamUrl = NSString(format:"%@/streams/%i.json", ApiURL, id) as String
-            for _ in 1...5 {
-                getURL(url: streamUrl, fn: {(streamResults) in
-                    if let value = streamResults.value(forKey: "stream_uuid") as? String {
-                        self.streamUuid = value
-                    }
-                })
-                if (self.streamUuid != nil) {
-                    break
-                } else {
-                    sleep(1)
-                }
-            }
-        }
-        if (self.mediaUrl != nil && self.streamUuid != nil) {
-            let getStreamUrl = NSString(format:"%@/streams/get_url.json?stream_uuid=%@", ApiURL, self.streamUuid) as String
-            for _ in 1...5 {
-                getURL(url: getStreamUrl, fn: {(getStreamResults) in
-                    if let value = getStreamResults["stream_url"] as? String {
-                        self.streamUrl = value
-                    }
-                })
-                if (self.streamUrl != nil) {
-                    break
-                } else {
-                    sleep(1)
-                }
-            }
-        }
-        if (self.mediaUrl != nil && self.streamUuid != nil && self.streamUrl != nil) {
-            let streamAsset = AVAsset(url: URL(string: self.streamUrl)!)
-            let playerItem = AVPlayerItem(asset: streamAsset)
-            let playerViewController = AVPlayerViewController()
-            playerViewController.delegate = self as? AVPlayerViewControllerDelegate
-            let player = AVPlayer(playerItem: playerItem)
-            playerViewController.player = player
-            self.present(playerViewController, animated: true) {
-                player.play()
             }
         }
     }
