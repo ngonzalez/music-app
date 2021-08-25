@@ -22,7 +22,6 @@ class DetailsViewController: BaseController {
     override func viewDidLoad() {
         super.viewDidLoad()
         getItems(id: self.selectedId)
-        UIApplication.shared.isIdleTimerDisabled = true
     }
 
     func getItems(id: Int) {
@@ -39,24 +38,29 @@ class DetailsViewController: BaseController {
         let item:AnyObject = getItem(index: indexPath.row)
         let itemId:Int = item["item_id"] as! Int
         self.tableView.deselectRow(at: indexPath, animated: true)
-        self.m3u8_exists = false
         playTrack(id: itemId)
     }
 
     override func format_cell_label(item: AnyObject) -> String {
-        let itemArtist = item["artist"] as! String
-        let itemTitle = item["title"] as! String
-        return "\(itemArtist) - \(itemTitle)"
+        var str = ""
+        if let itemArtist = item["artist"] as? String {
+            str += " \(itemArtist)"
+        }
+        if let itemTitle = item["title"] as? String {
+            str += " \(itemTitle)"
+        }
+        return str
     }
 
     func playTrack(id: Int) {
-        let trackUrl = NSString(format:"%@/audio_files/%i.json", ApiURL, id) as String
+        self.m3u8_exists = false
         for _ in 1...10 {
             if (self.m3u8_exists) {
                 playStream(url: "/hls/\(id).m3u8")
                 break
             } else {
-                getURL(url: trackUrl, fn: {(results) in
+                let url = NSString(format:"%@/audio_files/%i.json", ApiURL, id) as String
+                getURL(url: url, fn: {(results) in
                     if (results["m3u8_exists"] as? Int == 1) {
                         self.m3u8_exists = true
                     }
@@ -77,5 +81,5 @@ class DetailsViewController: BaseController {
             player.play()
         }
     }
-    
+
 }
