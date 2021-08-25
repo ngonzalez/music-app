@@ -2,15 +2,15 @@
 //  BaseController.swift
 //  Music App
 //
-//  Created by enyo on 2018-05-20.
-//  Copyright © 2018 enyo. All rights reserved.
+//  Created by Nicolas Gonzalez on 2018-05-20.
+//  Copyright © 2021 Nicolas Gonzalez. All rights reserved.
 //
 
 import UIKit
 
 class BaseController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchDisplayDelegate, UITextFieldDelegate {
 
-    var ApiURL = "http://192.168.64.5"
+    var ApiURL = "http://192.168.64.6"
 
     @IBOutlet var tableView: UITableView!
 

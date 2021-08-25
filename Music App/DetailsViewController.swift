@@ -2,8 +2,8 @@
 //  DetailsViewController.swift
 //  Music App
 //
-//  Created by enyo on 2018-05-20.
-//  Copyright © 2018 enyo. All rights reserved.
+//  Created by Nicolas Gonzalez on 2018-05-20.
+//  Copyright © 2021 Nicolas Gonzalez. All rights reserved.
 //
 
 import UIKit
@@ -15,11 +15,9 @@ class DetailsViewController: BaseController {
 
     var videoPlayer:AVPlayer!
     
-    var m3u8_exists:Bool = false
-    
-    var stream_url:String = ""
-    
     var playerViewController:AVPlayerViewController = AVPlayerViewController()
+
+    var m3u8_exists:Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +39,7 @@ class DetailsViewController: BaseController {
         let item:AnyObject = getItem(index: indexPath.row)
         let itemId:Int = item["item_id"] as! Int
         self.tableView.deselectRow(at: indexPath, animated: true)
+        self.m3u8_exists = false
         playTrack(id: itemId)
     }
 

@@ -2,8 +2,8 @@
 //  ViewController.swift
 //  Music App
 //
-//  Created by enyo on 2018-05-20.
-//  Copyright © 2018 enyo. All rights reserved.
+//  Created by Nicolas Gonzalez on 2018-05-20.
+//  Copyright © 2021 Nicolas Gonzalez. All rights reserved.
 //
 
 import UIKit
@@ -37,9 +37,14 @@ class ViewController: BaseController {
     }
 
     override func format_cell_label(item: AnyObject) -> String {
-        let itemYear = item["year"] as! String
-        let itemName = item["formatted_name"] as! String
-        return "\(itemYear) - \(itemName)"
+        var str = ""
+        if let itemYear = item["year"] as? String {
+            str += " \(itemYear)"
+        }
+        if let itemName = item["formatted_name"] as? String {
+            str += " \(itemName)"
+        }
+        return str
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

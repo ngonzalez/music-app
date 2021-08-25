@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  Music App
 //
-//  Created by enyo on 2018-05-20.
-//  Copyright © 2018 enyo. All rights reserved.
+//  Created by Nicolas Gonzalez on 2018-05-20.
+//  Copyright © 2021 Nicolas Gonzalez. All rights reserved.
 //
 
 import UIKit
