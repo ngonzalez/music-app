@@ -10,7 +10,7 @@ import UIKit
 
 class BaseController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UISearchDisplayDelegate, UITextFieldDelegate {
 
-    var ApiURL = "http://0.0.0.0:3000"
+    var ApiURL = "http://192.168.64.5"
 
     @IBOutlet var tableView: UITableView!
 
