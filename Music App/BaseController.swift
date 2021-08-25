@@ -16,7 +16,7 @@ class BaseController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     var messagesArray: [AnyObject] = []
 
-    var selectedId: String = String()
+    var selectedId:Int = Int()
 
     func getItem(index: Int) -> AnyObject {
         return messagesArray[index]
@@ -37,7 +37,7 @@ class BaseController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let request = URLRequest(url: URL(string: url)!)
         let task = session.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
             do {
-                fn(try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers) as AnyObject)
+                fn(try JSONSerialization.jsonObject(with: data!) as AnyObject)
             } catch let error as NSError {
                 print(error)
             }

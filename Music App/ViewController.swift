@@ -44,8 +44,8 @@ class ViewController: BaseController {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item:AnyObject = getItem(index: indexPath.row)
-        let dataUrl:String = item["data_url"] as! String
-        self.selectedId = dataUrl
+        let itemId:Int = item["id"] as! Int
+        self.selectedId = itemId
         performSegue(withIdentifier: "ShowDetails", sender: self)
     }
 

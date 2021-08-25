@@ -27,8 +27,8 @@ class DetailsViewController: BaseController {
         UIApplication.shared.isIdleTimerDisabled = true
     }
 
-    func getItems(id: String) {
-        let url = NSString(format:"%@/music_folders/%@.json", ApiURL, self.selectedId) as String
+    func getItems(id: Int) {
+        let url = NSString(format:"%@/music_folders/%i.json", ApiURL, id) as String
         getURL(url: url, fn: {(results) in
             self.messagesArray = results as! [AnyObject]
             DispatchQueue.main.sync {
@@ -36,10 +36,10 @@ class DetailsViewController: BaseController {
             }
         })
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item:AnyObject = getItem(index: indexPath.row)
-        let itemId:String = item["data_url"] as! String
+        let itemId:Int = item["item_id"] as! Int
         self.tableView.deselectRow(at: indexPath, animated: true)
         playTrack(id: itemId)
     }
@@ -50,25 +50,20 @@ class DetailsViewController: BaseController {
         return "\(itemArtist) - \(itemTitle)"
     }
 
-    func playTrack(id: String) {
-        let trackUrl = NSString(format:"%@/audio_files/%@.json", ApiURL, id) as String
+    func playTrack(id: Int) {
+        let trackUrl = NSString(format:"%@/audio_files/%i.json", ApiURL, id) as String
         for _ in 1...10 {
             if (self.m3u8_exists) {
+                playStream(url: "/hls/\(id).m3u8")
                 break
             } else {
+                getURL(url: trackUrl, fn: {(results) in
+                    if (results["m3u8_exists"] as? Int == 1) {
+                        self.m3u8_exists = true
+                    }
+                })
                 sleep(1)
             }
-            getURL(url: trackUrl, fn: {(results) in
-                if (results["m3u8_exists"] as? Int == 1) {
-                    self.m3u8_exists = true
-                    if let itemId = results["item_id"] as? Int {
-                        self.stream_url = "/hls/\(itemId).m3u8"
-                    }
-                }
-            })
-        }
-        if self.m3u8_exists {
-            playStream(url: self.stream_url)
         }
     }
 
@@ -78,8 +73,8 @@ class DetailsViewController: BaseController {
         let playerItem = AVPlayerItem(asset: streamAsset)
         self.playerViewController.delegate = self as? AVPlayerViewControllerDelegate
         let player = AVPlayer(playerItem: playerItem)
-        playerViewController.player = player
-        self.present(playerViewController, animated: true) {
+        self.playerViewController.player = player
+        self.present(self.playerViewController, animated: true) {
             player.play()
         }
     }
